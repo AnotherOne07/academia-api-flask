@@ -1,12 +1,28 @@
-import os
-import psycopg2
-from dotenv import load_dotenv
 from flask import Flask
-
-# load_dotenv()
+from config import Config
+from flask_sqlalchemy import SQLAlchemy
+import os
 
 app = Flask(__name__)
-# db_url = os.environ.get("DATABASE_URL")
-# conn = psycopg2.connect(db_url)
+app.config.from_object(Config)
 
-from views import *
+db = SQLAlchemy(app)
+
+# db.init_app(app)
+
+# from models import db
+from views import app_routes
+
+app.register_blueprint(app_routes)
+
+
+# db_url = os.environ.get("DATABASE_URL")
+# conn = psycopg2.connect(
+#     database="postgres",
+#     user="postgres",
+#     password="postgres",
+#     host=db_url,
+#     port=5432)
+
+if __name__ == '__main__':
+    app.run(debug=True)
