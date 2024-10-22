@@ -194,3 +194,7 @@ def listar_fichas_treino():
     lista_fichas = [ficha.to_dict() for ficha in fichas]
 
     return jsonify(lista_fichas), 200
+
+
+#-----------------------------------------------------------------------------
+# ROTAS PARA ALUNO ACOMPANHA FICHA DE TREINO
