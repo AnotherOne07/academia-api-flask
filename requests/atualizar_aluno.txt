@@ -1,0 +1,24 @@
+{
+    "usuario": {
+        "cep": "87654321",
+        "numero_casa": "456",
+        "rua": "Avenida Lateral",
+        "palavra_forte": "senha_seguranca",
+        "primeiro_nome": "Maria",
+        "sobrenome": "Santos",
+        "data_nascimento": "1985-05-15",
+        "telefone": {
+            "celular": "21987654321",
+            "fixo": "2134567890"
+        },
+        "academia_codigo_unidade": 1
+    },
+    "aluno": {
+        "matricula": 54321,
+        "numero_sessoes": 15,
+        "data_matricula": "2024-09-15",
+        "altura": 1.60,
+        "peso": 60.0,
+        "observacoes": "Frequência irregular"
+    }
+}

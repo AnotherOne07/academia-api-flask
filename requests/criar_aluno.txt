@@ -1,0 +1,58 @@
+URL: http://127.0.0.1:5000/criarAluno
+
+{
+    "usuario": {
+        "cpf": "98765432100",
+        "cep": "87654321",
+        "numero_casa": "456",
+        "rua": "Avenida Central",
+        "usuario": "maria_santos",
+        "palavra_forte": "senha_seguranca",
+        "primeiro_nome": "Maria",
+        "sobrenome": "Santos",
+        "data_nascimento": "1985-05-15",
+        "telefone": {
+            "celular": "21987654321",
+            "fixo": "2134567890"
+        },
+        "academia_codigo_unidade": 1
+    },
+    "aluno": {
+        "matricula": 54321,
+        "numero_sessoes": 15,
+        "data_matricula": "2024-09-15",
+        "altura": 1.60,
+        "peso": 60.0,
+        "observacoes": "Frequência irregular"
+    }
+}
+
+{
+    "usuario": {
+        "cpf": "12345678901",
+        "cep": "12345678",
+        "numero_casa": "123",
+        "rua": "Rua Exemplo",
+        "usuario": "usuario_exemplo",
+        "palavra_forte": "senha_forte",
+        "primeiro_nome": "João",
+        "sobrenome": "Silva",
+        "data_nascimento": "1990-01-01",
+        "telefone": {
+            "celular": "11987654321",
+            "fixo": "1134567890"
+        },
+        "academia_codigo_unidade": 1
+    },
+    "aluno": {
+        "matricula": 12345,
+        "numero_sessoes": 10,
+        "data_matricula": "2024-10-21",
+        "altura": 1.75,
+        "peso": 70.0,
+        "observacoes": "Aluno regular"
+    }
+}
+
+
+
