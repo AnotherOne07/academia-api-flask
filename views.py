@@ -148,7 +148,7 @@ def atualizar_aluno():
         db.session.commit()
 
         return jsonify({
-            "mensagem": "Aluno atualizado com sucesso",
+            "message": "Aluno atualizado com sucesso!",
             # "aluno": aluno.to_dict(),
             # "usuario": usuario.to_dict()
         }), 200
@@ -188,8 +188,8 @@ def deletar_aluno(matricula):
 #-----------------------------------------------------------------------------
 # ROTAS PARA FICHA DE TREINO
 
-# LISTAR TODAS
-@app_routes.route('/listarFichasTreino', methods=['GET'])
+# LISTAR TODAS - OK
+@app_routes.route('/fichasTreino', methods=['GET'])
 def listar_fichas_treino():
     fichas = FichaTreino.query.all()
 
@@ -197,7 +197,7 @@ def listar_fichas_treino():
 
     return jsonify(lista_fichas), 200
 
-# LISTAR FICHA DE TREINO
+# LISTAR FICHA DE TREINO - OK
 @app_routes.route('/listarFichaTreino/<int:id>', methods=['GET'])
 def get_ficha_treino(id):
     ficha = FichaTreino.query.get(id)
@@ -208,12 +208,12 @@ def get_ficha_treino(id):
 
     return jsonify(ficha), 200
 
-# CRIAR FICHA DE TREINO
+# CRIAR FICHA DE TREINO - OK
 @app_routes.route('/criarFichaTreino', methods=['POST'])
 def criar_ficha_treino():
     data = request.get_json()
 
-    if not all(k in data for k in ('tipo', 'objetivo'))
+    if not all(k in data for k in ('tipo', 'objetivo')):
         return jsonify({'error': 'Dados insuficientes para a ficha de treino.'})
     
     nova_ficha = FichaTreino(
@@ -228,9 +228,9 @@ def criar_ficha_treino():
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
-    return jsonify({'message': 'Aluno criado com sucesso!'}), 201
+    return jsonify({'message': 'Ficha de Treino criada com sucesso!'}), 201
 
-# ATUALIZAR FICHA DE TREINO
+# ATUALIZAR FICHA DE TREINO - OK
 @app_routes.route('/atualizarFichaTreino', methods=['POST'])
 def atualizar_ficha_treino():
     data = request.get_json()
@@ -240,5 +240,34 @@ def atualizar_ficha_treino():
 
         if not ficha:
             return jsonify({"erro": "Ficha não encontrada."})
+        
+        if data:
+            ficha.tipo = data.get('tipo', data.tipo)
+            ficha.objetivo = data.get('objetivo', data.objetivo)
+
+        db.session.commit()
+
+        return jsonify({"message":"Ficha de Treino atualizada com sucesso!"})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"erro": str(e)}), 500
+
+# DELETAR FICHA DE TREINO 
+@app_routes.route('/deletarFichaTreino/<int:id>', methods=['GET'])
+def delete_ficha_treino(id):
+    try:
+        ficha = FichaTreino.query.filter_by(id=id).first()
+
+        if not ficha:
+            return jsonify({"erro": "Ficha de treino não encontrado"}), 404
+        
+        db.session.delete(ficha)
+
+        db.session.commit()
+        return jsonify({"message": "Ficha de Treino excluído com sucesso"}), 200
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"erro": str(e)}), 500
 #-----------------------------------------------------------------------------
 # ROTAS PARA ALUNO ACOMPANHA FICHA DE TREINO
