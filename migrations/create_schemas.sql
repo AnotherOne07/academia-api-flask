@@ -52,11 +52,10 @@ CREATE TABLE IF NOT EXISTS ficha_treino (
 );
 
 CREATE TABLE IF NOT EXISTS aluno_acompanha_ficha_treino (
-  id INTEGER NOT NULL,
-	data DATE NOT NULL,
+  id SERIAL PRIMARY KEY,
+  data DATE NOT NULL,
   aluno_matricula INTEGER NOT NULL,
   ficha_treino_id INTEGER NOT NULL,
-  PRIMARY KEY (id),
   FOREIGN KEY (aluno_matricula)
     REFERENCES aluno (matricula)
     ON DELETE NO ACTION

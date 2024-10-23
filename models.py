@@ -92,7 +92,7 @@ class FichaTreino(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     tipo = db.Column(db.SmallInteger, nullable=False)
-    objetivo = db.Column(db.String(100), nullable=False, default='Ganhar Massa')
+    objetivo = db.Column(db.String(100), nullable=False)
 
     def to_dict(self):
         return {
@@ -104,17 +104,18 @@ class FichaTreino(db.Model):
 class AlunoAcompanhaFichaTreino(db.Model):
     __tablename__ = 'aluno_acompanha_ficha_treino'
 
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
     data = db.Column(db.Date, nullable=False)
-    aluno_matricula = db.Column(db.Integer, db.ForeignKey('aluno.matricula'), primary_key=True, nullable=False)
-    ficha_treino_id = db.Column(db.Integer, db.ForeignKey('ficha_treino.id'), primary_key=True, nullable=False)
+    aluno_matricula = db.Column(db.Integer, db.ForeignKey('aluno.matricula'), nullable=False)
+    ficha_treino_id = db.Column(db.Integer, db.ForeignKey('ficha_treino.id'), nullable=False)
 
-    # Relacionamentos
-    aluno = db.relationship('Aluno', backref=db.backref('fichas_treino', lazy=True))
-    ficha_treino = db.relationship('FichaTreino', backref=db.backref('alunos', lazy=True))
+    aluno = db.relationship('Aluno', backref='fichas_treino')
+    ficha_treino = db.relationship('FichaTreino', backref='alunos')
 
     def to_dict(self):
         return {
-            'data': self.data.isoformat(),
+            'id': self.id,
+            'data': self.data.isoformat() if self.data else None,
             'aluno_matricula': self.aluno_matricula,
             'ficha_treino_id': self.ficha_treino_id
         }

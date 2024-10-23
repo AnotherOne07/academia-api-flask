@@ -112,7 +112,6 @@ def atualizar_aluno():
     usuario_data = data.get('usuario')
 
     try:
-        # Buscar o aluno pela matrícula
         aluno = Aluno.query.filter_by(matricula=aluno_data['matricula']).first()
 
         if not aluno:
@@ -147,11 +146,7 @@ def atualizar_aluno():
         # Transação utilizada para garantir consistência nas alterações
         db.session.commit()
 
-        return jsonify({
-            "message": "Aluno atualizado com sucesso!",
-            # "aluno": aluno.to_dict(),
-            # "usuario": usuario.to_dict()
-        }), 200
+        return jsonify({"message": "Aluno atualizado com sucesso!"}), 200
 
     except Exception as e:
         db.session.rollback()
@@ -236,14 +231,14 @@ def atualizar_ficha_treino():
     data = request.get_json()
 
     try:
-        ficha = FichaTreino.query.filter_by(id=data['id'])
+        ficha = FichaTreino.query.filter_by(id=data['id']).first()
 
         if not ficha:
             return jsonify({"erro": "Ficha não encontrada."})
         
         if data:
-            ficha.tipo = data.get('tipo', data.tipo)
-            ficha.objetivo = data.get('objetivo', data.objetivo)
+            ficha.tipo = data.get('tipo', ficha.tipo)
+            ficha.objetivo = data.get('objetivo', ficha.objetivo)
 
         db.session.commit()
 
@@ -271,3 +266,86 @@ def delete_ficha_treino(id):
         return jsonify({"erro": str(e)}), 500
 #-----------------------------------------------------------------------------
 # ROTAS PARA ALUNO ACOMPANHA FICHA DE TREINO
+
+# LISTAR TODOS OS REGISTROS DA TABELA DE RELACIONAMENTO ALUNO ACOMPANHA FICHA DE TREINO - OK
+@app_routes.route('/listarAlunosFichasTreino', methods=['GET'])
+def listar_aluno_acompanha_ficha_treino():
+    alunos_ficha_treino = AlunoAcompanhaFichaTreino.query.all()
+
+    lista_aluno_ficha_treino = [aluno_ficha.to_dict() for aluno_ficha in alunos_ficha_treino]
+
+    return jsonify(lista_aluno_ficha_treino), 200
+
+# LISTAR UM REGISTRO DA TABELA DE RELACIONAMENTO ALUNO ACOMPANHA FICHA DE TREINO - OK
+@app_routes.route('/alunoFichaTreino/<int:id>', methods=['GET'])
+def get_aluno_acompanha_ficha_treino(id):
+    aluno_ficha_treino = AlunoAcompanhaFichaTreino.query.get(id)
+    if aluno_ficha_treino is None:
+        return jsonify({'message': 'Aluno Acompanha Ficha de Treino não encontrada!'}), 404
+
+    return jsonify(aluno_ficha_treino.to_dict()), 200
+
+# CRIAR ALUNO ACOMPANHA FICHA TREINO
+@app_routes.route('/criarAlunoFichaTreino', methods=['POST'])
+def criar_aluno_ficha_treino():
+    data_request = request.get_json()
+
+    if not all(k in data_request for k in ('data', 'aluno_matricula', 'ficha_treino_id')):
+        return jsonify({'error': 'Dados insuficientes para registro de aluno acompanha ficha de treino'}), 400
+
+    novo_aluno_ficha_treino = AlunoAcompanhaFichaTreino(
+        data=data_request['data'],
+        aluno_matricula=data_request['aluno_matricula'],
+        ficha_treino_id=data_request['ficha_treino_id']
+    )
+
+    try:
+        db.session.add(novo_aluno_ficha_treino)
+        db.session.commit()
+        return jsonify({'message': 'Aluno Acompanha Ficha de Treino criada com sucesso!'}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+    
+@app_routes.route('/atualizarAlunoFichaTreino', methods=['POST'])
+def atualizar_aluno_ficha_treino():
+    data_request = request.get_json()
+
+    try:
+        aluno_ficha_treino = AlunoAcompanhaFichaTreino.query.filter_by(id=data_request['id']).first()
+
+        if not aluno_ficha_treino:
+            return jsonify({"erro": "Registro não encontrado"}), 404
+        
+        # Atualizar dados do objeto
+        if data_request:
+            aluno_ficha_treino.data = data_request.get('data', aluno_ficha_treino.data)
+            aluno_ficha_treino.aluno_matricula = data_request.get('aluno_matricula', aluno_ficha_treino.aluno_matricula)
+            aluno_ficha_treino.ficha_treino_id = data_request.get('ficha_treino_id', aluno_ficha_treino.ficha_treino_id)
+
+    # Transação utilizada para garantir consistência nas alterações
+        db.session.commit()
+
+        return jsonify({"message": "Registro atualizado com sucesso!"}), 200
+    
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"erro": str(e)}), 500
+    
+@app_routes.route('/deletarAlunoFichaTreino/<int:id>', methods=['GET'])
+def deletar_aluno_ficha_treino(id):
+    try:
+        aluno_ficha_treino = AlunoAcompanhaFichaTreino.query.filter_by(id=id).first()
+
+        if not aluno_ficha_treino:
+            return jsonify({"erro": "Registro não encontrado."}), 404
+        
+        db.session.delete(aluno_ficha_treino)
+
+        db.session.commit()
+        return jsonify({"message": "Registro excluído com sucesso!"}), 404
+    
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"erro": str(e)}), 500
