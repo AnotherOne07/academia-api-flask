@@ -344,7 +344,7 @@ def deletar_aluno_ficha_treino(id):
         db.session.delete(aluno_ficha_treino)
 
         db.session.commit()
-        return jsonify({"message": "Registro excluído com sucesso!"}), 404
+        return jsonify({"message": "Registro excluído com sucesso!"}), 200
     
     except Exception as e:
         db.session.rollback()
